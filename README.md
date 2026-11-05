@@ -82,7 +82,7 @@
 
 ## 4. 还原方法
 
-分卷为纯字节切分（每卷 90 MB），按顺序拼接后 zstd 解压。**先把同一个包的所有分卷下到同一目录**，文件名按 `part_000` 递增，shell 通配符顺序即正确顺序：
+分卷为纯字节切分（每卷约 90 MB，`v2.1` 实际每卷 92 MB / 末卷不足一卷），按顺序拼接后 zstd 解压。**先把同一个包的所有分卷下到同一目录**，文件名按 `part_000` 递增，shell 通配符顺序即正确顺序：
 
 ```bash
 # 以 gsv_data 为例，其他包把前缀换掉即可
@@ -93,13 +93,13 @@ tar -xf gsv_data.tar
 
 各包前缀与所在 Release：
 
-| 前缀 | 来源 Release | 约卷数 |
+| 前缀 | 来源 Release | 卷数 |
 |---|---|---|
 | `logs_all` / `pado_raw` / `pado_misc` / `scripts_all` | `v2.0-all-assets` | 各 1-3 |
 | `gsv_data` | `v2.0-all-assets` | 14 |
 | `gsv_weights_v2pro` | `v2.0-all-assets` | 23 |
 | `pb8` | `v2.0-all-assets` | 31 |
-| `v2proplus_weights` | **`v2.1-v2proplus`** | 约 68 |
+| `v2proplus_weights` | **`v2.1-v2proplus`** | 61（已校验：序号连续、全部 uploaded、总 5,877,972,357 字节与源包一致） |
 
 校验：`cat *.part_* > x.tar.zst && zstd -t x.tar.zst && tar -tf x.tar | head`，能列出文件即完整。
 
