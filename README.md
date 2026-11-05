@@ -21,7 +21,9 @@
 | `ceshi3hao/niemoli-gpt-sovits` | 语音模型成品权重（2 个） | `v1.0` |
 | `ceshi3hao/niemoli-voice-dataset` | 对白语音素材 + 干净训练集 | `v1.0`（原始 1.27GB）、`v2.0-clean`（1349 条） |
 | `ceshi3hao/niemoli-song-dataset` | **歌声数据集**：599 条标注 + 12 首分离人声 + 配置/字典/脚本 | `v1.0-song-assets`、`backup-20261105-verified` |
-| `ceshi3hao/niemoli-full-archive` | **本次全量归档**：对白中间数据 + 全部权重 + 全部脚本 | `v2.0-all-assets`（分卷） |
+| `ceshi3hao/niemoli-full-archive` | **本次全量归档**：对白中间数据 + 全部权重 + 全部脚本 | `v2.0-all-assets`（logs/pado/gsv_data/gsv_weights_v2pro/pb8 分卷）、`v2.1-v2proplus`（v2ProPlus 权重单独分卷） |
+
+> **注意**：v2ProPlus 权重（约 6.1G / 68 卷）因单个 Release 资产过多会触发 GitHub 上传卡住，单独放在 `v2.1-v2proplus`。**两个 Release 都要下载**。仓库根目录 `README.md` 与 Release 资产 `ASSETS_GUIDE.md` 均为本文档。
 
 ---
 
@@ -80,7 +82,7 @@
 
 ## 4. 还原方法
 
-分卷为纯字节切分（每卷 90 MB），按顺序拼接后 zstd 解压：
+分卷为纯字节切分（每卷 90 MB），按顺序拼接后 zstd 解压。**先把同一个包的所有分卷下到同一目录**，文件名按 `part_000` 递增，shell 通配符顺序即正确顺序：
 
 ```bash
 # 以 gsv_data 为例，其他包把前缀换掉即可
@@ -88,6 +90,18 @@ cat gsv_data.part_* > gsv_data.tar.zst
 zstd -d gsv_data.tar.zst          # -> gsv_data.tar
 tar -xf gsv_data.tar
 ```
+
+各包前缀与所在 Release：
+
+| 前缀 | 来源 Release | 约卷数 |
+|---|---|---|
+| `logs_all` / `pado_raw` / `pado_misc` / `scripts_all` | `v2.0-all-assets` | 各 1-3 |
+| `gsv_data` | `v2.0-all-assets` | 14 |
+| `gsv_weights_v2pro` | `v2.0-all-assets` | 23 |
+| `pb8` | `v2.0-all-assets` | 31 |
+| `v2proplus_weights` | **`v2.1-v2proplus`** | 约 68 |
+
+校验：`cat *.part_* > x.tar.zst && zstd -t x.tar.zst && tar -tf x.tar | head`，能列出文件即完整。
 
 已上传的 `niemoli-voice-dataset` 分卷同理（`cat niemoli-clean-train-pack.part_* > ...zip && unzip`），详见各仓库 `RESTORE.md`。
 
